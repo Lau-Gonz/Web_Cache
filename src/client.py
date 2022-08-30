@@ -15,8 +15,10 @@ def main() -> None:
             res = socket_client.recv(1024)
             print("Respuesta:\n" + str(res, "utf-8"))
             socket_client.close()
-    except:
-        print(response(500, ""))
+    except ConnectionRefusedError:
+        print(response(404, "Server Not Found"))
+    except ConnectionResetError:
+        print(response(999, "Se cerro el servidor we"))
 
 
 if __name__ == "__main__":

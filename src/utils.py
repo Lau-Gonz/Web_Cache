@@ -26,7 +26,6 @@ def request(method: str, uri: str) -> str:
         {"http": {"method": method, "uri": uri}},
     )
 
-
 def response(
     status_code: int,
     message: str,
@@ -42,7 +41,7 @@ def response(
                     "message": message,
                     "content-length": content_length,
                 },
-                "data": bytes("", "utf-8"),
+                #"data": bytes("", "utf-8"),
             }
         )
     return json.dumps(

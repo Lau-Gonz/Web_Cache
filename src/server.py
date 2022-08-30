@@ -1,10 +1,12 @@
+from distutils.cmd import Command
 import os
+from posixpath import split
 from socket import socket, AF_INET, SOCK_STREAM
 from time import sleep
 from env import SERVER_PORT
 from utils import response, Sentence
 
-SERVER_STORAGE = "src/server/storage"
+SERVER_STORAGE = "src/storage"
 
 
 def run_commad(sentence: Sentence) -> str:
@@ -30,8 +32,10 @@ def run_commad(sentence: Sentence) -> str:
             with open(f"{SERVER_STORAGE}/{file}") as file:
                 content = "".join(file.readlines())
                 return response(200, "Ok", len(content), "text/plain", content)
-        case _:
+        case other:
             return response(200, get_help())
+        #case other:
+            #return response()
 
 
 def get_help(command: str | None = None) -> str:
@@ -41,19 +45,19 @@ def get_help(command: str | None = None) -> str:
         \nUsage: ls [OPTION]... [FILE]...\n\
         \nOptions:\
         \n-l | --list - Print as a list\
-      """
+        """
         case "rm":
             return """\
         \nUsage: rm FILE\n
-      """
+        """
         case "cat":
             return """\
         \nUsage: cat FILE\n
-      """
+        """
         case "rm-cache":
             return """\
         \nUsage: rm-cache\n
-      """
+        """
         case _:
             return """\
         \nUsage: command [OPTION]... [FILE]...\n\
@@ -63,7 +67,8 @@ def get_help(command: str | None = None) -> str:
         \ncat - print content of file\
         \nrm-cache - remove web cache\
         \nhelp - show help\
-      """
+        \nget - pos un get\
+        """
 
 
 def handle_request(request: dict[str, dict[str, str]]) -> str:
@@ -87,5 +92,9 @@ def main() -> None:
         print("Mensaje recibido de ", ip_client)
 
         payload = str(socket_connection.recv(1024), "utf-8")
-        socket_connection.send(bytes(payload, "utf-8"))
+        com=Sentence(payload.split()[len(payload.split())-1])
+        socket_connection.send(bytes(run_commad(com), "utf-8"))
         socket_connection.close()
+
+if __name__ == "__main__":
+    main()

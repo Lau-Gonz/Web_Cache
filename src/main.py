@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.10
 import sys
-from server.main import main as server
+from server import main as server
+from client import main as client
 
 
 def main(argc: int, argv: list[str]) -> None:
@@ -15,3 +16,6 @@ def main(argc: int, argv: list[str]) -> None:
 if __name__ == "__main__":
     argv = sys.argv
     main(len(argv), argv)
+    server()
+    client()
+
